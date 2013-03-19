@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:paddingBottom="35dip"
+        android:paddingLeft="10dip" 
+        android:minWidth="100dip" 
+        android:id="@+id/balloon_main_layout"
+        android:background="@drawable/balloon_overlay_bg_selector" 
+        android:paddingTop="0dip"
+        android:paddingRight="0dip">
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:paddingTop="8dip" />
+  	  
+  	  <LinearLayout
+  	      android:id="@+id/balloon_inner_layout"
+  	      android:layout_width="wrap_content"
+  	      android:layout_height="wrap_content"
+  	      android:layout_weight="0.1"
+  	      android:orientation="vertical"
+  	      android:paddingTop="8dip" >
+
+  	      <EditText
+  	          android:id="@+id/balloon_item_title"
+  	          android:layout_width="80dp"
+  	          android:layout_height="17dp"
+  	          android:hint="balloon_item_title"
+  	          android:textColor="#FF000000"
+  	          android:textSize="10dip" >
+
+  	          <requestFocus />
+  	      </EditText>
+
+  	      <TextView
+  	          android:id="@+id/memo"
+  	          android:layout_width="76dp"
+  	          android:layout_height="wrap_content"
+  	          android:hint="balloon_item_snippet"
+  	          android:textSize="10dip" />
+
+  	  </LinearLayout>
+
+</LinearLayout>
