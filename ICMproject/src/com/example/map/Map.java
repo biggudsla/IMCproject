@@ -6,9 +6,11 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.location.Address;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -58,10 +60,11 @@ public class Map extends Activity {
 	    while(idx < mAreaList.size()) {
 	    	
 	    	mLoc = mAreaList.get(idx).loc;
+	    	String memo = mAreaList.get(idx).addr;
 	    	
 	    	mMap.addMarker(new MarkerOptions()
 	    					.position(mLoc)
-	    					.title("This will be ok")
+	    					.title(memo)
 	    					);
 	    	idx++;
 	    }
@@ -83,7 +86,7 @@ public class Map extends Activity {
                 TextView memo = (TextView) v.findViewById(R.id.memo);
                 ImageView imgV = (ImageView) v.findViewById(R.id.photo);
 
-                memo.setText("please");
+                memo.setText(marker.getTitle());
 
                 
                 /**
@@ -95,16 +98,13 @@ public class Map extends Activity {
  //               LatLng l = marker.getPosition();
                 
                 String mPath = mAreaList.get(mIdx).pathOfPic.get(0); // 해당 위치에 저장된 많은 사진중 첫번째 사진주
-                imgV.setImageURI(Uri.parse(mPath));
+                Bitmap bitm = decodeBitmapFromStringpath(mPath, 100, 100);
+                imgV.setImageBitmap(bitm);
+//                imgV.setImageURI(Uri.parse(mPath));
                 // Returning the view containing InfoWindow contents
                 return v;
-              
 			}
-	    	
 	    });
-	     
-	    
-	    
 	    // TODO Auto-generated method stub
 	}
 	
@@ -139,7 +139,7 @@ public class Map extends Activity {
 	    
 	    for(int i=0; i<pList.size(); i++) {
 	    	
-	    	if( !pList.get(i).LATI.isEmpty()) {	
+	    	if( pList.get(i).LATI != null) {	
 	    		_lat = Double.parseDouble(pList.get(i).LATI);
 	    		_longi = Double.parseDouble(pList.get(i).LONGI);
 	    		_loc = new LatLng(_lat, _longi);
@@ -174,18 +174,48 @@ public class Map extends Activity {
 					
 					else
 						AreaWithPic.areaList.add(new AreaWithPic(ad, _loc, picPath));
-					
-					
-					
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	    		
 	    	}
-	  
-	    	
 	    }
-	    
 	}
-
+	
+	public Bitmap decodeBitmapFromStringpath(String filePath, int reqWidth, int reqHeight){
+		//First convert string str to Filepath
+//		String filePath = getFilePathfromUri(Uri.parse(str));			
+		
+		//Second decode with inJustDecodeBounds=true to check dimensions
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		// to get options.outwidth... these are just dimensions of bitmap
+		BitmapFactory.decodeFile(filePath, options);
+		
+		//Calculate inSampleSize
+		options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+		options.inJustDecodeBounds = false; // means return BITMAP!!!			
+		return BitmapFactory.decodeFile(filePath, options);
+	}	
+	
+	 private int calculateInSampleSize(Options options, int reqWidth,
+				int reqHeight) {
+			// TODO Auto-generated method stub
+			// to set dimensions with unprocessed bitmaps dimensions
+			final int height = options.outHeight;
+			final int width = options.outWidth;
+			int inSampleSize = 1;
+			
+			if (height > reqHeight || width > reqWidth){
+				if(width > height){ // 작은 크기에 맞춰서 줄이는데 왜? // 큰키게에 맞춰서 줄여야지 여백이 생기더라도 이미지가 잘리지 않을 텐데
+					//600,800경우와 300, 80 경우를 생각을 해보면 req100,100일때... 맞는거 같은데 궁금
+					//그래서 내 생각대로 바꿈
+					inSampleSize = Math.round((float)width / (float)reqWidth);					
+				} else{
+					inSampleSize = Math.round((float)height / (float)reqHeight);
+				}
+			}			
+			return inSampleSize;
+		}
 }
