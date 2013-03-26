@@ -32,6 +32,12 @@
         </activity>
         <meta-data android:value="AIzaSyB3y1htdxaj3VrbeEjf0pWgzhzkRvLgdxE" android:name="com.google.android.maps.v2.API_KEY"/>
         <activity android:name="com.example.map.Map"></activity>
+        <activity android:name="com.example.oursource.CustomAlbum">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.CUSTOM_ALBUM"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

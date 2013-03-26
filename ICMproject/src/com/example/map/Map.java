@@ -6,12 +6,14 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import com.example.oursource.picture;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -39,7 +42,7 @@ public class Map extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.map);
-	    
+	    mCtx = Map.this;
 	    
 	  
 	    /**
@@ -61,6 +64,7 @@ public class Map extends Activity {
 	    	
 	    	mLoc = mAreaList.get(idx).loc;
 	    	String memo = mAreaList.get(idx).addr;
+	    	//memo에 사진 제목이 들어갔으면 하는데 제목은 사진을 찍을 때 제공해야 한다.
 	    	
 	    	mMap.addMarker(new MarkerOptions()
 	    					.position(mLoc)
@@ -106,6 +110,26 @@ public class Map extends Activity {
 			}
 	    });
 	    // TODO Auto-generated method stub
+	    
+	    mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+
+			@Override
+			public void onInfoWindowClick(Marker marker) {
+				// TODO Auto-generated method stub
+				Log.e("map", "at InfoWindowClisck");
+				
+				String id = marker.getId();
+                int mIdx = Integer.parseInt( id.substring(1) ); // m 제외하고 스트링파싱 인트파
+				ArrayList<String> _pathOfPic = mAreaList.get(mIdx).pathOfPic;
+				
+				Intent intent = new Intent("android.intent.action.CUSTOM_ALBUM");
+				intent.putStringArrayListExtra("pathOfPic", _pathOfPic);
+				
+				mCtx.startActivity(intent);	
+				
+			}
+	    	
+	    });
 	}
 	
 	private void setupMapView(){
